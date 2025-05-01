@@ -3,6 +3,8 @@ FROM ubuntu:24.04
 
 # Evitar prompts interactivos durante la instalación
 ENV DEBIAN_FRONTEND=noninteractive
+ENV USER=root
+ENV HOME=/root
 
 # Instalar dependencias básicas + XFCE + VNC + SSH + Python
 RUN apt-get update && \
@@ -17,6 +19,11 @@ RUN apt-get update && \
     curl \
     git \
     nano \
+    dbus-x11 \
+    x11-utils \
+    x11-xserver-utils \
+    xdg-utils \
+    xauth \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,9 +35,21 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     apt-get install -y code
 
 # Configurar VNC (contraseña: "password")
-RUN mkdir /root/.vnc && \
+RUN mkdir -p /root/.vnc && \
     echo "password" | vncpasswd -f > /root/.vnc/passwd && \
     chmod 600 /root/.vnc/passwd
+
+# Configurar xstartup para XFCE
+RUN echo '#!/bin/sh \n\
+unset SESSION_MANAGER \n\
+unset DBUS_SESSION_BUS_ADDRESS \n\
+exec startxfce4' > /root/.vnc/xstartup && \
+    chmod 755 /root/.vnc/xstartup
+
+# Asegurar permisos y variables
+RUN chmod 700 /root/.vnc && \
+    touch /root/.Xauthority && \
+    chmod 600 /root/.Xauthority
 
 # Configurar SSH (usuario: root, contraseña: "password")
 RUN echo "root:password" | chpasswd && \
