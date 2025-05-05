@@ -11,24 +11,19 @@
 ## 🚀 Instrucciones paso a paso
 
 ### 1. Clonar el repositorio
-```bash
+```
 git clone https://github.com/tu-usuario/docker-gui-xfce-vscode.git
 cd docker-gui-xfce-vscode
 ```
 
 ### 2. Construir la imagen Docker
-```bash
-docker build -t ubuntu-gui .
+```
+sudo docker build -t ubuntu-gui .
 ```
 
 ### 3. Ejecutar el contenedor
-```bash
-docker run -d \
-  -p 5901:5901 \    # VNC
-  -p 2222:22 \      # SSH
-  -v $(pwd)/projects:/development \  # Volumen para persistencia
-  --name gui-container \
-  ubuntu-gui
+```
+sudo docker run -d -p 5901:5901 -p 2222:22 --name gui-container ubuntu-gui
 ```
 
 ---
@@ -45,7 +40,7 @@ docker run -d \
 1. Conéctate via VNC.
 2. Abre una terminal en XFCE.
 3. Ejecuta:
-```bash
+```
 code /development --user-data-dir='.' --no-sandbox
 ```
 
