@@ -39,6 +39,7 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     apt-get update && \
     apt-get install -y code
 
+
 # Configurar VNC para devuser
 USER devuser
 RUN echo "password" | vncpasswd -f > /home/devuser/.vnc/passwd && \
@@ -64,6 +65,16 @@ USER root
 RUN chown -R devuser:devuser /home/devuser && \
     update-desktop-database && \
     ssh-keygen -A
+
+# Instalar VSCode y extensión de Python
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
+    install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/ && \
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list && \
+    apt-get update && \
+    apt-get install -y code && \
+    # Instalar extensión Python como usuario devuser
+    su - devuser -c "code --install-extension ms-python.python --user-data-dir=/home/devuser/.vscode"
+
 
 # Configurar SSH
 RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config && \
