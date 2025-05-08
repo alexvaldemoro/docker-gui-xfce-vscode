@@ -16,13 +16,13 @@ Entorno de desarrollo gráfico en contenedor Docker con:
 
 ### 1. Clonar repositorio
 ```bash
-git clone https://github.com/tu-usuario/docker-xfce-vscode.git
-cd docker-xfce-vscode
+git clone https://github.com/alexvaldemoro/docker-gui-xfce-vscode.git
+cd docker-gui-xfce-vscode
 ```
 
 ### 2. Construir imagen Docker
 ```bash
-sudo docker build -t xfce-vscode .
+sudo docker build -t ubuntu-gui .
 ```
 
 ### 3. Ejecutar contenedor
