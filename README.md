@@ -1,63 +1,76 @@
-# Entorno Docker con GUI XFCE, VSCode, Python y SSH  
-**Despliegue de un entorno gráfico en contenedores Docker para desarrollo**
+# Entorno Docker con GUI XFCE, VSCode y SSH
 
-## 🛠️ Requisitos previos
-- Docker instalado ([instrucciones oficiales](https://docs.docker.com/get-docker/))
-- Cliente VNC ([Remmina](https://remmina.org/) recomendado)
-- 4 GB de RAM mínimo recomendado
+Entorno de desarrollo gráfico en contenedor Docker con:
+- Escritorio XFCE
+- Visual Studio Code
+- Python 3
+- Servidor VNC (acceso gráfico)
+- Servidor SSH
 
----
+## 🛠 Requisitos
+- Docker instalado
+- Cliente VNC (Recomendado: [Remmina](https://remmina.org/))
+- 2 GB de RAM mínimo
 
-## 🚀 Instrucciones paso a paso
+## 🚀 Instrucciones rápidas
 
-### 1. Clonar el repositorio
+### 1. Clonar repositorio
+```bash
+git clone https://github.com/tu-usuario/docker-xfce-vscode.git
+cd docker-xfce-vscode
 ```
-git clone https://github.com/tu-usuario/docker-gui-xfce-vscode.git
-cd docker-gui-xfce-vscode
+
+### 2. Construir imagen Docker
+```bash
+sudo docker build -t xfce-vscode .
 ```
 
-### 2. Construir la imagen Docker
-```
-sudo docker build -t ubuntu-gui .
-```
-
-### 3. Ejecutar el contenedor
-```
+### 3. Ejecutar contenedor
+```bash
 sudo docker run -d -p 5901:5901 -p 2222:22 --name gui-container ubuntu-gui
 ```
 
----
-
 ## 🌐 Conexión VNC
-| Parámetro       | Valor                 |
-|-----------------|-----------------------|
-| **Dirección**   | `localhost:5901`      |
-| **Contraseña**  | `password` (defecto)  |
+| Parámetro       | Valor           |
+|-----------------|-----------------|
+| **Dirección**   | `localhost:5901`|
+| **Contraseña**  | `password`      |
 
----
-
-## 🖥️ Uso de VSCode en el contenedor
-1. Conéctate via VNC.
-2. Abre una terminal en XFCE.
-3. Ejecuta:
-```
-code /development --user-data-dir='.' --no-sandbox
+## 🔑 Conexión SSH
+```bash
+ssh devuser@localhost -p 2222
+# Contraseña: password
 ```
 
----
+## 👨💻 Usar Visual Studio Code
+1. Desde el escritorio XFCE:
+   - Doble clic en el icono **VSCode Desktop**
+   - O en terminal:
+   ```bash
+   code --user-data-dir='/home/devuser/.vscode' --no-sandbox
+   ```
 
-## 🛠️ Personalización
-### Cambiar contraseña VNC/SSH
-Edita estas líneas en el `Dockerfile`:
-```dockerfile
-# Contraseña VNC
-RUN echo "nueva-pass" | vncpasswd -f > /root/.vnc/passwd
+## 🛠 Troubleshooting
 
-# Contraseña SSH
-RUN echo "root:nueva-pass" | chpasswd
+### 🖥 VNC no conecta
+1. Verificar logs del contenedor:
+```bash
+docker logs gui-container
 ```
 
----
+### 🔌 Puertos bloqueados
+```bash
+sudo lsof -ti:5901 | xargs kill -9
+```
+
+## 📂 Estructura del proyecto
+```
+docker-xfce-vscode/
+├── Dockerfile
+├── start-vnc.sh
+└── README.md
+```
 
 ## 📜 Licencia
-Ninguna
+MIT License - Uso educativo/no productivo.
+
