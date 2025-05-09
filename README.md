@@ -1,5 +1,10 @@
 # Entorno Docker con GUI XFCE, VSCode y SSH
 
+#Problemas WSL
+
+si experimentas problemas a la hora de correr el dockerfile desde Windows WSL teniendo instalado VScode en tu maquina usa una maquina virtual, o desinstala el VScode de la maquina host.
+(Se han aplicado cambios para que esto no suceda, y aunque tengas VScode instalado en el host y ejecutes este dockerfile a traves de ubuntu WSL desde windows deberia funcionar)
+
 Entorno de desarrollo gráfico en contenedor Docker con:
 - Escritorio XFCE
 - Visual Studio Code
@@ -44,10 +49,10 @@ ssh devuser@localhost -p 2222
 
 ## 👨💻 Usar Visual Studio Code
 1. Desde el escritorio XFCE:
-   - Doble clic en el icono **VSCode Desktop**
+   - Doble clic en el icono **vscode.sh**
    - O en terminal:
    ```bash
-   code --user-data-dir='/home/devuser/.vscode' --no-sandbox
+   yes 'y' | code --user-data-dir='/home/devuser/.vscode' --no-sandbox
    ```
 
 ## 🛠 Troubleshooting
