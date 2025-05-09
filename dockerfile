@@ -32,13 +32,15 @@ RUN useradd -m -s /bin/bash devuser && \
     mkdir -p /home/devuser/.vnc && \
     chown -R devuser:devuser /home/devuser
 
-# Instalar Visual Studio Code
+# Instalar VSCode (forzar 'y' en la pregunta de WSL)
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
     install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/ && \
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list && \
     apt-get update && \
-    apt-get install -y code
-
+    # Forzar 'y' con yes y redirección de entrada
+    yes 'y' | apt-get install -y code && \
+    # Instalar extensión Python
+    yes 'y' | su - devuser -c "code --install-extension ms-python.python --user-data-dir=/home/devuser/.vscode"
 
 # Configurar VNC para devuser
 USER devuser
@@ -47,33 +49,19 @@ RUN echo "password" | vncpasswd -f > /home/devuser/.vnc/passwd && \
     echo '#!/bin/sh\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADDRESS\nexec startxfce4' > /home/devuser/.vnc/xstartup && \
     chmod +x /home/devuser/.vnc/xstartup
 
-# Crear acceso directo en el escritorio para VSCode
+
+
+# Crear script en el escritorio de devuser
 RUN mkdir -p /home/devuser/Desktop && \
-    echo '[Desktop Entry]\n\
-    Version=1.0\n\
-    Name=Visual Studio Code\n\
-    Comment=Code Editing. Redefined.\n\
-    Exec=code --user-data-dir="/home/devuser/.vscode" --no-sandbox\n\
-    Icon=/usr/share/icons/hicolor/256x256/apps/code.png\n\
-    Terminal=false\n\
-    Type=Application\n\
-    Categories=Development;IDE;\n' > /home/devuser/Desktop/vscode.desktop && \
-    chmod +x /home/devuser/Desktop/vscode.desktop
+    echo -e "#!/bin/sh\nyes 'y' | code --user-data-dir=\"/home/devuser/.vscode\" --no-sandbox" > /home/devuser/Desktop/vscode.sh && \
+    chmod +x /home/devuser/Desktop/vscode.sh && \
+    chown -R devuser:devuser /home/devuser/Desktop
 
 # Configuración final
 USER root
 RUN chown -R devuser:devuser /home/devuser && \
     update-desktop-database && \
     ssh-keygen -A
-
-# Instalar VSCode y extensión de Python
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
-    install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/ && \
-    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list && \
-    apt-get update && \
-    apt-get install -y code && \
-    # Instalar extensión Python como usuario devuser
-    su - devuser -c "code --install-extension ms-python.python --user-data-dir=/home/devuser/.vscode"
 
 
 # Configurar SSH
