@@ -1,6 +1,6 @@
 # Entorno Docker con GUI XFCE, VSCode y SSH
 
-#Problemas WSL
+## ❌ Problemas WSL
 
 si experimentas problemas a la hora de correr el dockerfile desde Windows WSL teniendo instalado VScode en tu maquina usa una maquina virtual, o desinstala el VScode de la maquina host.
 (Se han aplicado cambios para que esto no suceda, y aunque tengas VScode instalado en el host y ejecutes este dockerfile a traves de ubuntu WSL desde windows deberia funcionar)
